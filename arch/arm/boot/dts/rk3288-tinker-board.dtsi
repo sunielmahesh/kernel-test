@@ -244,7 +244,6 @@
 };
 
 &sdmmc {
-	supports-sd;
 	bus-width = <4>;
 	cap-mmc-highspeed;
 	sd-uhs-sdr12;
@@ -261,6 +260,8 @@
 	vmmc-supply = <&vcc33_sd>;
 	vqmmc-supply = <&vccio_sd>;
 	supports-sd;
+	supports-emmc;
+	mmc-pwrseq = <&sdmmc_pwrseq>;
 };
 
 &edp {
@@ -458,6 +459,12 @@
 	pmic {
 		pmic_int: pmic-int {
 			rockchip,pins = <RK_GPIO0 4 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	sdmmc-pwrseq {
+		sdmmc_reset: sdmmc-reset {
+			rockchip,pins = <6 7 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
