@@ -138,17 +138,12 @@
 		regulator-max-microvolt = <1800000>;
 	};
 
-	vcc_phy: vcc-phy-regulator {
+	vdd_3v3_reg: fixedregulator_3v3 {
 		compatible = "regulator-fixed";
-		enable-active-high;
-		gpio = <&gpio0 6 GPIO_ACTIVE_HIGH>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&eth_phy_pwr>;
-		regulator-name = "vcc_phy";
+		regulator-name = "3v3";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		regulator-always-on;
-		regulator-boot-on;
 	};
 
 	vcc_sys: vsys-regulator {
@@ -175,6 +170,14 @@
 		startup-delay-us = <100000>;
 		vin-supply = <&vcc_io>;
 	};
+
+	vcc_flash: flash-regulator {
+                compatible = "regulator-fixed";
+                regulator-name = "vcc_flash";
+                regulator-min-microvolt = <1800000>;
+                regulator-max-microvolt = <1800000>;
+                vin-supply = <&vcc_io>;
+        };
 
 	wireless-bluetooth {
 		compatible = "bluetooth-platdata";
@@ -208,7 +211,7 @@
 	num-slots = <1>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&emmc_clk &emmc_cmd &emmc_pwr &emmc_bus8>;
-	max-frequency = <100000000>;
+	max-frequency = <150000000>;
 	mmc-hs200-1_8v;
 	mmc-ddr-1_8v;
 	status = "okay";
@@ -476,6 +479,14 @@
 		pmic_int: pmic-int {
 			rockchip,pins = <RK_GPIO0 4 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
+
+		dvs_1: dvs-1 {
+			rockchip,pins = <RK_GPIO0 11 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+
+		dvs_2: dvs-2 {
+			rockchip,pins = <RK_GPIO0 12 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
 	};
 
 	sdmmc-pwrseq {
@@ -541,4 +552,15 @@
 			rockchip,pins = <4 30 RK_FUNC_GPIO &pcfg_pull_down>;
 		};
 	};
+};
+
+&rockchip_suspend {
+	rockchip,sleep-mode-config = <
+		(0
+		|RKPM_CTR_PWR_DMNS
+		|RKPM_CTR_PLLS
+		|RKPM_CTR_ARMOFF_LPMD
+		|RKPM_CTR_SYSCLK_OSC_DIS
+		)
+	>;
 };
